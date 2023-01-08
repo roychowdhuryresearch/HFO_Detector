@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='HFODetector',
-    version='0.0.11',
+    version='0.1.0',
     description='Package for detecting HFOs',
     url='https://github.com/roychowdhuryresearch/HFO_Detector',
     author='Xin Chen, Hoyoung Chung',
