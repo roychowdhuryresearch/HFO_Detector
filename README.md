@@ -19,13 +19,10 @@ if __name__ == "__main__":
                 rms_window=3*1e-3, min_window=6*1e-3, min_gap=10 * 1e-3, 
                 epoch_len=600, min_osc=6, rms_thres=5, peak_thres=3,
                 n_jobs=32, front_num=1)
-    ## channel_names will be the same length as the channels in the edf
-    ## start_end will be a nested 2D list which is the same length as the channel_names and 
-    ## contains start and end indexs of each HFOs in each channel.
     channel_names, start_end = detector.detect_edf(edf_path)
-    #channel_names is a list that is the same length as the number of channels in the edf
-    #start_end is a nested list with the same length as channel_names. start_end[i][j][0] and start_end[i][j][1] 
-    #will give the start and end index respectively for the jth detected HFO in channel channel_names[i]
+    # channel_names is a list that is the same length as the number of channels in the edf
+    # start_end is a nested list with the same length as channel_names. start_end[i][j][0] and start_end[i][j][1] 
+    # will give the start and end index respectively for the jth detected HFO in channel channel_names[i]
     channel_names = np.concatenate([[channel_names[i]]*len(start_end[i]) for i in range(len(channel_names))])
     start_end = [start_end[i] for i in range(len(start_end)) if len(start_end[i])>0]
     start_end = np.concatenate(start_end)
@@ -57,9 +54,9 @@ if __name__ == "__main__":
                 base_seg=125*1e-3, base_shift=0.5, base_thrd=0.67, base_min=5,
                 n_jobs=32, front_num=1)
     channel_names, start_end = detector.detect_edf(edf_path)
-    #channel_names is a list that is the same length as the number of channels in the edf
-    #start_end is a nested list with the same length as channel_names. start_end[i][j][0] and start_end[i][j][1] 
-    #will give the start and end index respectively for the jth detected HFO in channel channel_names[i]
+    # channel_names is a list that is the same length as the number of channels in the edf
+    # start_end is a nested list with the same length as channel_names. start_end[i][j][0] and start_end[i][j][1] 
+    # will give the start and end index respectively for the jth detected HFO in channel channel_names[i]
     channel_names = np.concatenate([[channel_names[i]]*len(start_end[i]) for i in range(len(channel_names))])
     start_end = [start_end[i] for i in range(len(start_end)) if len(start_end[i])>0]
     start_end = np.concatenate(start_end)
