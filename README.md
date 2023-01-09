@@ -30,7 +30,7 @@ if __name__ == "__main__":
 ```
 Which results a pandas dataframe `HFO_ste_df` a sample is displayed below:
 
-![image](HFO_ste_df_sample.png)
+![image](https://github.com/roychowdhuryresearch/HFO_Detector/raw/main/HFO_ste_df_sample.png)
 
 This dataframe has the following 3 columns:
 - `channel` : name of the channel corresponding to the detected HFO
@@ -64,7 +64,7 @@ if __name__ == "__main__":
 ```
 Which results a pandas dataframe `HFO_mni_df` a sample is displayed below:
 
-![image](HFO_mni_df_sample.png)
+![image](https://github.com/roychowdhuryresearch/HFO_Detector/raw/main/HFO_mni_df_sample.png)
 
 This dataframe has the following 3 columns:
 - `channel` : name of the channel corresponding to the detected HFO
