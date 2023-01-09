@@ -1,9 +1,15 @@
 from setuptools import setup, find_packages
+from pathlib import Path
+
+this_directory = Path(__file__).parent
+long_description = (this_directory / "README.md").read_text()
 
 setup(
     name='HFODetector',
-    version='0.0.12',
+    version='0.0.13',
     description='Package for detecting HFOs',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     url='https://github.com/roychowdhuryresearch/HFO_Detector',
     author='Xin Chen, Hoyoung Chung',
     author_email='xinchen98@g.ucla.edu, taylorchung@ucla.edu',
