@@ -72,7 +72,7 @@ This dataframe has the following 3 columns:
 - `end` : end timestamp of the detected HFO in milliseconds
 
 ### Contributors:
-Deparement of Electrical and Computer Engineering, University of California, Los Angeles
+Department of Electrical and Computer Engineering, University of California, Los Angeles
 - [Xin Chen](https://www.linkedin.com/in/xin-chen-980521/)
 - [Hoyoung Chung](https://www.linkedin.com/in/tc01/)
 - [Lawrence Liu](https://www.linkedin.com/in/lawrence-liu-0a01391a7/)
@@ -83,7 +83,7 @@ Division of Pediatric Neurology, Department of Pediatrics, UCLA Mattel Childrenâ
 - [Hiroki Nariai](https://www.uclahealth.org/providers/hiroki-nariai)
 
 
-### Contracts:
-Please create github issue or email the following people for further information 
+### Contacts:
+Please create a github issue or email the following people for further information 
 - Lawrence Liu (lawrencerliu@g.ucla.edu) 
 - Yuanyi Ding (semiswiet@g.ucla.edu)
