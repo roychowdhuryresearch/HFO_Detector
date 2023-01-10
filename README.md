@@ -3,7 +3,9 @@
 HFODetector is Python package that that is capable of detecting HFOs with either a STE or an MNI detector. Detection speed is increased by using multiprocessing.
 
 ## Installation
-```pip install HFODetector```
+```
+pip install HFODetector
+```
 
 ## Example usage 
 ### STE detector
@@ -30,7 +32,7 @@ if __name__ == "__main__":
 ```
 Which results a pandas dataframe `HFO_ste_df` a sample is displayed below:
 
-![image](https://github.com/roychowdhuryresearch/HFO_Detector/raw/main/HFO_ste_df_sample.png)
+<img src="img/readme/HFO_ste_df_sample.png" width="200">
 
 This dataframe has the following 3 columns:
 - `channel` : name of the channel corresponding to the detected HFO
@@ -64,7 +66,8 @@ if __name__ == "__main__":
 ```
 Which results a pandas dataframe `HFO_mni_df` a sample is displayed below:
 
-![image](https://github.com/roychowdhuryresearch/HFO_Detector/raw/main/HFO_mni_df_sample.png)
+<img src="img/readme/HFO_mni_df_sample.png" width="200">
+
 
 This dataframe has the following 3 columns:
 - `channel` : name of the channel corresponding to the detected HFO

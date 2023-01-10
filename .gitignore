@@ -1,3 +1,6 @@
 src/HFODetector.egg-info
 test/
 src/HFODetector/__pycache__/
+example/example.edf
+example/HFO_mni.csv
+example/HFO_ste.csv
