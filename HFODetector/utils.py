@@ -231,7 +231,7 @@ def compute_rms(filtered, sample_freq, window_size=6*1e-3, detector=None):
     return rms
 
 
-def compute_wavelet_entropy(sample_freq, epoch_samples, low, high, dev_cycles=3):
+def compute_wavelet_entropy(sample_freq, epoch_samples, low, high, a, dev_cycles=3):
     """Compute wavelet entropy
     Parameters
     ----------
@@ -245,6 +245,8 @@ def compute_wavelet_entropy(sample_freq, epoch_samples, low, high, dev_cycles=3)
         high frequency
     dev_cycles : int | float | 3 | optional
         number of cycles
+    a: int | None
+        seed for random number generator
     Returns
     -------
     wavelet_entropy : int | float
@@ -256,6 +258,7 @@ def compute_wavelet_entropy(sample_freq, epoch_samples, low, high, dev_cycles=3)
     high = validate_param(high, 'high', (int, float))
     dev_cycles = validate_param(dev_cycles, 'dev_cycles', (int, float))
     
+    np.random.seed(a)
     wavelet_entropy_max = np.zeros((100,1))
     for i in range(0, 100):
         segment = np.random.rand(epoch_samples, 1)
@@ -608,7 +611,8 @@ def gamlike(p, x):
     p[1] = validate_type(p[1], 'p[1]', (int, float))
     x = validate_type(x, 'x', np.ndarray)
 
-    return -np.sum(np.log(gampdf(x, p[0], p[1])))
+    with np.errstate(divide='ignore'): 
+        return -np.sum(np.log(gampdf(x, p[0], p[1])))
 
 
 def gamfit_search(a, avg, x):

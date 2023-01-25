@@ -8,7 +8,7 @@ class MNIDetector():
                 epoch_time=10, epo_CHF=60, per_CHF=95/100, 
                 min_win=10*1e-3, min_gap=10*1e-3, thrd_perc=99.9999/100, 
                 base_seg=125*1e-3, base_shift=0.5, base_thrd=0.67, base_min=5,
-                n_jobs=32, use_kwargs=True, front_num=1):
+                n_jobs=32, use_kwargs=True, front_num=1, seed=None):
         """Initialize the MNI detector
         sample_freq : float | int
             Sampling frequency of the data in Hz
@@ -40,6 +40,8 @@ class MNIDetector():
             Whether to pass additional arguments to the map function
         front_num : int, default 1
             Number of jobs to run in parallel at the front end
+        seed : int, default None
+            Random seed for reproducibility
         """
         sample_freq = validate_param(sample_freq, 'sample_freq', (int, float))
         filter_freq = validate_filter_freq(filter_freq)
@@ -58,6 +60,8 @@ class MNIDetector():
         n_jobs = validate_param(n_jobs, 'n_jobs', int)
         use_kwargs = validate_param(use_kwargs, 'use_kwargs', bool)
         front_num = validate_param(front_num, 'front_num', int)
+        seed = validate_param(seed, 'seed', (int, type(None)))
+
 
         self.sample_freq = sample_freq
         self.filter_freq = filter_freq
@@ -73,7 +77,8 @@ class MNIDetector():
         self.base_min = base_min
         self.n_jobs = n_jobs
         self.use_kwargs = use_kwargs
-        self.front_num = front_num    
+        self.front_num = front_num   
+        self.seed = seed 
 
     def detect_edf(self, edf_path):
         """Detect HFOs from an EDF file
@@ -148,13 +153,13 @@ class MNIDetector():
         if not filtered:
             data = preprocess(data, self.sample_freq, self.filter_freq)
         rms = compute_rms(data, self.sample_freq, detector='MNI')
-        baseline_window = self._detect_baseline(data, self.sample_freq, self.filter_freq, self.base_seg, self.base_shift, self.base_thrd)
+        baseline_window = self._detect_baseline(data, self.sample_freq, self.filter_freq, self.base_seg, self.base_shift, self.base_thrd, self.seed)
         thrd = self._compute_thrd(len(data), rms, baseline_window, self.base_min, self.epoch_time, self.sample_freq, self.thrd_perc, self.min_win, self.epo_CHF, self.per_CHF)
         HFOs = self._get_HFOs(rms, thrd, self.min_win, self.sample_freq, self.min_gap)
         return HFOs, channel_names
 
 
-    def _detect_baseline(self, filtered, sample_freq, filter_freq, base_seg, base_shift, base_thrd):
+    def _detect_baseline(self, filtered, sample_freq, filter_freq, base_seg, base_shift, base_thrd, seed):
         """Detect baseline segments
         
         Parameters
@@ -181,7 +186,7 @@ class MNIDetector():
         # get wavelet entropy
         epoch_samples = round(sample_freq * base_seg)
         low, high = filter_freq
-        wavelet_entropy = compute_wavelet_entropy(sample_freq, epoch_samples, low, high)
+        wavelet_entropy = compute_wavelet_entropy(sample_freq, epoch_samples, low, high, seed)
         
         # get baseline
         in_idx = list(range(1, data_len + 1, round(epoch_samples * base_shift)))
