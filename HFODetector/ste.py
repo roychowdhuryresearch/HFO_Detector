@@ -14,11 +14,11 @@ class STEDetector():
         filter_freq : list of float or int, length 2, default [80, 500] Hz
             Filter freqs in Hz
         rms_window : float | int, default 3 * 1e-3 s
-            RMS window time in milliseconds(ms)
+            RMS window time in seconds(s)
         min_window : float | int, default 6 * 1e-3 s
-            Minimum window time for an HFO in milliseconds(ms)
+            Minimum window time for an HFO in seconds(s)
         min_gap : float | int, default 10 * 1e-3 s
-            Minimum distance time between two HFO candidates in milliseconds(ms)
+            Minimum distance time between two HFO candidates in seconds(s)
         epoch_len : float | int, default 600 s
             Cycle time in seconds(s)
         min_osc : float | int, default 6
