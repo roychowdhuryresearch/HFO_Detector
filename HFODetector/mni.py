@@ -15,19 +15,19 @@ class MNIDetector():
         filter_freq : list of float or int, length 2, default [80, 500] Hz
             Filter freqs in Hz
         epoch_time: float | int, default 10 s
-            Cycle Time in seconds
+            Cycle Time in seconds(s)
         epo_CHF: float | int, default 60 s
-            Continuous High Frequency epoch in seconds
+            Continuous High Frequency epoch in seconds(s)
         per_CHF: float | int, default 95 %
             Continous High Frequency percentage (%)
-        min_win: float | int, default 10 ms
-            Minimum HFO time in seconds
-        min_gap: float | int, default 10 ms
-            Minimum gap between HFOs in seconds
+        min_win: float | int, default 10 * 1e-3 s
+            Minimum HFO time in seconds(s)
+        min_gap: float | int, default 10 * 1e-3s
+            Minimum gap between HFOs in seconds(s)
         thrd_perc: float | int, default 99.9999 %
             Threshold percentile (%)
-        base_seg: float | int, default 125 ms
-            Baseline window size in seconds
+        base_seg: float | int, default 125 * 1e-3 s
+            Baseline window size in seconds(s)
         base_shift: float | int, default 0.5
             Baseline window shift
         base_thrd: float | int, default 0.67
