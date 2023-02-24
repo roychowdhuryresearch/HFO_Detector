@@ -60,7 +60,7 @@ class MNIDetector():
         n_jobs = validate_param(n_jobs, 'n_jobs', int)
         use_kwargs = validate_param(use_kwargs, 'use_kwargs', bool)
         front_num = validate_param(front_num, 'front_num', int)
-        seed = validate_param(seed, 'seed', (int, type(None)))
+        #seed = validate_param(seed, 'seed', (int, type(None)))
 
 
         self.sample_freq = sample_freq
