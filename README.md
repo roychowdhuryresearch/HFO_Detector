@@ -76,8 +76,8 @@ This dataframe has the following 3 columns:
 
 ### Contributors:
 Department of Electrical and Computer Engineering, University of California, Los Angeles
-- [Xin Chen](https://www.linkedin.com/in/xin-chen-980521/)
-- [Hoyoung Chung](https://www.linkedin.com/in/tc01/)
+- [Xin Chen](https://www.linkedin.com/in/xin-chen-980521/) -- Main Author of MNI
+- [Hoyoung Chung](https://www.linkedin.com/in/tc01/) -- Main Author of STE
 - [Lawrence Liu](https://www.linkedin.com/in/lawrence-liu-0a01391a7/)
 - [Qiujing Lu](https://www.linkedin.com/in/qiujing-lu-309042126/)
 - [Yipeng Zhang](https://zyp5511.github.io/)
