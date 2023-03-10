@@ -6,6 +6,13 @@
 
 HFODetector is Python package that that is capable of detecting HFOs with either a STE or an MNI detector. Detection speed is increased by using multiprocessing.
 
+### Bibtex 
+If you find our project is useful in your research, please cite:
+```
+Coming soon
+```
+
+
 ## Installation
 ```
 pip install HFODetector
