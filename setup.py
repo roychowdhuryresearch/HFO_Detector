@@ -6,7 +6,7 @@ long_description = (this_directory / "README.md").read_text()
 
 setup(
     name='HFODetector',
-    version='0.0.14',
+    version='0.0.18',
     description='Package for detecting HFOs',
     long_description=long_description,
     long_description_content_type='text/markdown',
