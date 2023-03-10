@@ -9,7 +9,7 @@ HFODetector is Python package that that is capable of detecting HFOs with either
 ### Bibtex 
 If you find our project is useful in your research, please cite:
 ```
-Coming soon
+Coming Soon
 ```
 
 
