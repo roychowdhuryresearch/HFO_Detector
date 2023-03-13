@@ -91,6 +91,7 @@ Department of Electrical and Computer Engineering, University of California, Los
 - [Hoyoung Chung](https://www.linkedin.com/in/tc01/) -- Main Author of STE
 - [Lawrence Liu](https://www.linkedin.com/in/lawrence-liu-0a01391a7/)
 - [Qiujing Lu](https://www.linkedin.com/in/qiujing-lu-309042126/)
+- [Yuanyi Ding](https://www.linkedin.com/in/yuanyi-ding-4a981a132/)
 - [Yipeng Zhang](https://zyp5511.github.io/)
 
 Division of Pediatric Neurology, Department of Pediatrics, UCLA Mattel Children’s Hospital David Geffen School of Medicine
