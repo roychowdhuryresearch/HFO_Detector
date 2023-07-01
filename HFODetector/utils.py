@@ -272,9 +272,7 @@ def compute_wavelet_entropy(sample_freq, epoch_samples, low, high, seed, dev_cyc
     return np.median(wavelet_entropy_max)
 
 
-def gabor_transform_wait(pv_signal, sample_rate, min_freq, max_freq, dev_cycles=3, magnitudes=1,
-                         squared_mag=0,
-                         band_ave=0, phases=0, time_step=[]):
+def gabor_transform_wait(pv_signal, sample_rate, min_freq, max_freq, dev_cycles=3):
     """This function calculates the Wavelet Transform using a Gaussian modulated window (Gabor Wavelet).
     Parameters
     ----------
@@ -288,20 +286,7 @@ def gabor_transform_wait(pv_signal, sample_rate, min_freq, max_freq, dev_cycles=
         Max frequency (in Hz) to process to
     dev_cycles : float | int
          the number of cycles to include for the wavelet transform at every frequency.
-    magnitudes : int|float | 1 | optional
-        Set to 1 (default) if the magnitudes of the coefficients must be returned; 0 for analytic values (complex values).
-    squared_mag : int|float | 0 | optional
-        Set to 1 if the magnitudes of the coefficients divided by the squared of the corresponding scale must by power to 2
-    band_ave : int|float | 0 | optional
-        Set to 1 if instead of returning a matrix with all values
-        in the time-frequency map, the function returns just a vector with the
-        average along all the frequency scales for each time moment.
-    phases : int | 0 | optional
-        Set to 1 if the phases of the coefficients must be returned; 0 for analytic values (complex values).
-    time_step : array|list | [] | optional
-        time step between values that are going to be kept in the output matrix
-        Each time moment is the average of the previous values according to the size of the window defined by this parameter.
-    
+   
     Returns
     -------
     w_coef : array
@@ -313,13 +298,7 @@ def gabor_transform_wait(pv_signal, sample_rate, min_freq, max_freq, dev_cycles=
     min_freq = validate_param(min_freq, 'min_freq', (int, float))
     max_freq = validate_param(max_freq, 'max_freq', (int, float))
     dev_cycles = validate_param(dev_cycles, 'dev_cycles', (int, float))
-    magnitudes = validate_param(magnitudes, 'magnitudes', (int, float))
-    squared_mag = validate_param(squared_mag, 'squared_mag', (int, float))
-    band_ave = validate_param(band_ave, 'band_ave', (int, float))
-    phases = validate_param(phases, 'phases', (int, float))
-    time_step = validate_type(time_step, 'time_step', (list, tuple, np.ndarray))
-
-    pv_signal = pv_signal[:]
+    pv_signal = np.reshape(pv_signal[:], (-1))
     freq_seg = len(list(range(min_freq, max_freq, 5)))
     freq_step = int((max_freq - min_freq) / (freq_seg - 1))
     freq_axis = np.arange(min_freq, max_freq + freq_step, freq_step)
@@ -335,73 +314,15 @@ def gabor_transform_wait(pv_signal, sample_rate, min_freq, max_freq, dev_cycles=
     w_axis = w_axis * sample_rate
     w_axis_half = w_axis[:s_half_len]
 
-    if not time_step:
-        sample_ave = 1
-    else:
-        sample_ave = [round(ts * sample_rate) for ts in time_step]
-        if all(x < 1 for x in sample_ave):
-            sample_ave = 1
-
-    sample_ave_filt = []
-    if sample_ave > 1:
-        ind_samp = list(range(1, len(time_axis), sample_ave))
-        time_axis = [time_axis[i] for i in ind_samp]
-        sample_ave_filt = np.ones(sample_ave, 1)
-
+    dev_sec = ((1 / freq_axis) * dev_cycles).reshape((-1, 1))
+    tmp1 = (np.repeat(w_axis_half[None,:], len(freq_axis), 0) - 2 * np.pi * freq_axis[:,None]) ** 2
+    tmp = np.exp(-0.5 * tmp1 * (dev_sec ** 2))
+    win_fft = np.zeros((len(freq_axis), s_len))
+    win_fft[:, :s_half_len] = tmp
+    win_fft = win_fft * np.sqrt(s_len) / np.linalg.norm(win_fft, axis=1)[:, None] #21 *999
     signal_fft = scipy.fft.fft(pv_signal, len(pv_signal), axis=0)
-    signal_fft = signal_fft.reshape((-1, 1))
-
-    gabor_wt = np.zeros((len(freq_axis), len(time_axis)), dtype=complex)
-    freq_ind = 0
-    for freq_counter in freq_axis:
-        dev_sec = (1 / freq_counter) * dev_cycles 
-        win_fft = np.zeros((s_len, 1))
-        tmp1 = (w_axis_half - 2 * np.pi * freq_counter) ** 2
-        tmp2 = dev_sec ** 2
-        tmp = np.exp(-0.5 * tmp1 * tmp2)
-        win_fft[:s_half_len] = np.reshape(tmp, (len(tmp), 1))
-        win_fft = win_fft * np.sqrt(s_len) / np.linalg.norm(win_fft)
-        freq_ind += 1
-
-        if sample_ave > 1:
-            gabor_tmp = np.zeros((len(signal_fft) + (sample_ave - 1), 1), dtype=complex)
-            gabor_tmp[sample_ave:] = scipy.fft.ifft(signal_fft * win_fft, axis=0) / np.sqrt(dev_sec)
-
-            if magnitudes:
-                gabor_tmp = abs(gabor_tmp)
-            if squared_mag:
-                gabor_tmp **= 2
-
-            gabor_tmp[:(sample_ave - 1)] = np.flipud(gabor_tmp[(sample_ave + 1):(2 * sample_ave - 1)])
-            gabor_tmp = filter(sample_ave_filt, 1, gabor_tmp) / sample_ave
-            gabor_tmp = gabor_tmp[sample_ave:]
-
-            gabor_wt[freq_ind - 1] = gabor_tmp[ind_samp]
-
-        else:
-            tmp_ifft = scipy.fft.ifft(signal_fft * win_fft, axis=0) / np.sqrt(dev_sec)
-            gabor_wt[freq_ind - 1] = tmp_ifft.reshape((1, len(tmp_ifft)))
-
-    if sample_ave > 1:
-        return gabor_wt
-
-    if phases != 0:
-        gabor_wt = np.angle(gabor_wt)
-        return gabor_wt
-
-    if magnitudes != 1:
-        return gabor_wt
-
+    gabor_wt = scipy.fft.ifft(signal_fft * win_fft, axis=1) / np.sqrt(dev_sec)
     gabor_wt = abs(gabor_wt)
-
-    if squared_mag != 0:
-        gabor_wt **= 2
-
-    if band_ave != 0:
-        gabor_wt = np.mean(gabor_wt, 2)
-        gabor_wt = np.flipud(gabor_wt)
-        time_axis = []
-        freq_axis = np.fliplr(freq_axis)
 
     return gabor_wt
 

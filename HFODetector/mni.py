@@ -131,7 +131,7 @@ class MNIDetector():
         return channel_name[index], HFOs[index]
 
 
-    def detect(self, data, channel_names, filtered=False):
+    def detect(self, data, channel_name, filtered=False):
         """Detect HFOs from a single channel
 
         Parameters
@@ -149,14 +149,14 @@ class MNIDetector():
             return None, None
         if data.ndim != 1:
             raise ValueError('data must be a 1D array')
-        channel_names = validate_type(channel_names, 'channel_names', str)
+        channel_name = validate_type(channel_name, 'channel_name', str)
         if not filtered:
             data = preprocess(data, self.sample_freq, self.filter_freq)
         rms = compute_rms(data, self.sample_freq, detector='MNI')
         baseline_window = self._detect_baseline(data, self.sample_freq, self.filter_freq, self.base_seg, self.base_shift, self.base_thrd, self.seed)
         thrd = self._compute_thrd(len(data), rms, baseline_window, self.base_min, self.epoch_time, self.sample_freq, self.thrd_perc, self.min_win, self.epo_CHF, self.per_CHF)
         HFOs = self._get_HFOs(rms, thrd, self.min_win, self.sample_freq, self.min_gap)
-        return HFOs, channel_names
+        return HFOs, channel_name
 
 
     def _detect_baseline(self, filtered, sample_freq, filter_freq, base_seg, base_shift, base_thrd, seed):
