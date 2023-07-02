@@ -115,7 +115,7 @@ class MNIDetector():
         data = validate_type(data, 'data', np.ndarray)
         channels = validate_type(channels, 'channels', np.ndarray)
 
-        param_list = [{"data":data[i], "channel_names":channels[i], "filtered":filtered} for i in range(len(channels))]
+        param_list = [{"data":data[i], "channel_name":channels[i], "filtered":filtered} for i in range(len(channels))]
         ret = parallel_process(param_list, self.detect, self.n_jobs, self.use_kwargs, self.front_num)
         channel_name, HFOs = [], []
         for j in ret:
