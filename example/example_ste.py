@@ -1,5 +1,8 @@
 import numpy as np
 import pandas as pd
+## add parent path of this file to sys.path, so we can import HFODetector
+import sys, os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from HFODetector import ste
 import argparse
 

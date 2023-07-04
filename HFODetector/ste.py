@@ -266,7 +266,7 @@ class STEDetector():
                 if len(peak_ind) < min_osc:
                     continue
 
-                wind_select.append([ii, jj])
+                wind_select.append([ii -1, jj -1])
                 count += 1
 
             if len(wind_select):

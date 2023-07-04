@@ -341,7 +341,7 @@ class MNIDetector():
         
         wind_ini = wind_ini.reshape(-1, 1)
         wind_end = wind_end.reshape(-1, 1)
-        HFO_events = np.hstack((wind_ini + 1, wind_end + 1)).tolist()
+        HFO_events = np.hstack((wind_ini, wind_end)).tolist()
 
             
         return HFO_events
