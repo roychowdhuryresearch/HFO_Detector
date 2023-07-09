@@ -181,7 +181,7 @@ class MNIDetector():
 
         # init outputs
         data_len = len(filtered)
-        baseline_window = np.zeros((data_len, 1))
+        baseline_window = np.zeros((data_len, 1), dtype=int)
 
         # get wavelet entropy
         epoch_samples = round(sample_freq * base_seg)
@@ -205,7 +205,7 @@ class MNIDetector():
             if we_section < base_thrd * wavelet_entropy:
                 baseline_window[in_idx[i] - 1:en_idx[i]] = 1
         del prob_energy, w_coef
-            
+        
         return baseline_window
     
 
@@ -244,8 +244,8 @@ class MNIDetector():
             raise ValueError('rms must be a 1D array')
         if baseline_window.ndim != 2 and baseline_window.shape[1] != 1:
             raise ValueError('baseline_window must be a 2D array with shape (n_samples, 1)')
-        if not np.equal(baseline_window, 0).any() or not np.equal(baseline_window, 1).any():
-            raise ValueError('baseline_window contain only 0 and 1')
+        # if not np.equal(baseline_window, 0).any() or not np.equal(baseline_window, 1).any():
+        #     raise ValueError('baseline_window contain only 0 and 1')
         if len(rms) != data_len and len(baseline_window) != data_len:
             raise ValueError('rms and baseline_window must have the same length as data_len')
 

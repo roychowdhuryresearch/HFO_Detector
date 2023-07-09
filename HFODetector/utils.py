@@ -351,8 +351,8 @@ def pos_baseline(baseline_window, rms, epoch_time, sample_freq, thr_perc):
     baseline_window = validate_type(baseline_window, 'baseline_window', np.ndarray)
     if baseline_window.ndim != 2 and baseline_window.shape[1] != 1:
         raise ValueError('baseline_window must be a 2D array with shape (n_samples, 1)')
-    if not np.equal(baseline_window, 0).any() or not np.equal(baseline_window, 1).any():
-        raise ValueError('baseline_window contains only 0 and 1')
+    # if not np.equal(baseline_window, 0).any() or not np.equal(baseline_window, 1).any():
+    #     raise ValueError('baseline_window contains only 0 and 1')
     rms = validate_type(rms, 'rms', np.ndarray)
     epoch_time = validate_param(epoch_time, 'epoch_time', (int, float))
     sample_freq = validate_param(sample_freq, 'sample_freq', (int, float))
