@@ -19,7 +19,7 @@ pip install HFODetector
 ```
 
 ------- 
-## Run time comparison
+## Run time comparison (in minutes)
 
 |  | Linux  | Linux | Windows | Windows | OS X | OS X |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
@@ -31,6 +31,7 @@ pip install HFODetector
 The testing data we are using is 19 patients 10 min data in [Refining epileptogenic high-frequency oscillations using deep learning: A novel reverse engineering approach](https://academic.oup.com/braincomms/article/4/1/fcab267/6420212) paper. 
 
 ** Single-core: n-jobs =1 for all machines,
+
 ** Multi-core: n-jobs = 32 for Linux (AMD Ryzen Threadripper 2950X), n-jobs = 8 for Windows(Intel i9-13900K) and Mac machines(Apple M1 Pro).
 
 ## Example usage 
