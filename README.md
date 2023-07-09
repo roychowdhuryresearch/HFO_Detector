@@ -18,6 +18,21 @@ Coming Soon
 pip install HFODetector
 ```
 
+------- 
+## Run time comparison
+
+|  | Linux  | Linux | Windows | Windows | OS X | OS X |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+|  | STE | MNI | STE | MNI | STE | MNI |
+| RIPPLELAB | 372.83 | 5647.12 | - | - | - | - |
+| pyHFO single-core | 57.43 | 971.35 | 34.57 | 933.31 | 35.90 | 659.63 |
+| pyHFO multi-core  | 5.18 | 83.30 | 9.03 | 113.59 | 7.56 | 114.35 |
+
+The testing data we are using is 19 patients 10 min data in [Refining epileptogenic high-frequency oscillations using deep learning: A novel reverse engineering approach](https://academic.oup.com/braincomms/article/4/1/fcab267/6420212) paper. 
+
+** Single-core: n-jobs =1 for all machines,
+** Multi-core: n-jobs = 32 for Linux (AMD Ryzen Threadripper 2950X), n-jobs = 8 for Windows(Intel i9-13900K) and Mac machines(Apple M1 Pro).
+
 ## Example usage 
 ### STE detector
 To use the STE detector, import `ste` from `HFODetector`, then a detector can be initialized with the desired parameters by calling `ste.STEDetector`. To use it to detect HFOs from an `.edf` file, call the `detect_edf` method. The `detect_edf` method takes a path to an edf file as input and returns a tuple containing the channel names and start and end timestamps of detected HFOs. The following code snippet shows how to use the STE detector.
