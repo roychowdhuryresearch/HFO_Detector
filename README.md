@@ -9,7 +9,7 @@ HFODetector is Python package that that is capable of detecting HFOs with either
 ### Bibtex 
 If you find our project is useful in your research, please cite:
 ```
-Coming Soon
+Zhang, Y., Liu, L., Ding, Y., Chen, X., Monsoor, T., Daida, A., ... & Roychowdhury, V. (2023). PyHFO: Lightweight Deep Learning-powered End-to-End High-Frequency Oscillations Analysis Application. bioRxiv, 2023-08.
 ```
 
 
