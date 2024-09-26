@@ -4,6 +4,8 @@ src/HFODetector/__pycache__/
 example/example.edf
 example/HFO_mni.csv
 example/HFO_ste.csv
+example/SM_A_ave.edf
+example/hilbert_signal_python.mat
 __pycache__/
 *.edf
 .ipynb_checkpoints/
