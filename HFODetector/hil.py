@@ -3,11 +3,10 @@ from scipy.signal import hilbert
 from .utils import *
 from scipy.io import savemat #改动
 
-class HILDetector():
-    
+class HILDetector():  
     def __init__(self, sample_freq, filter_freq=[80, 500], 
                 sd_thres=5, min_window=6 * 1e-3, 
-                epoch_len=600, n_jobs=32, 
+                epoch_time=10, n_jobs=8, 
                 use_kwargs=True, front_num=1):
         """
         Initialize the HIL-based HFO detector.
@@ -22,7 +21,7 @@ class HILDetector():
             Threshold in standard deviations for HFO detection
         min_window : float | int, default 6 * 1e-3 s
             Minimum window time for an HFO in seconds(s)
-        epoch_len : float | int, default 600 s
+        epoch_time : float | int, default 600 s
             Cycle time in seconds(s)
         n_jobs : int, default 32
             Number of jobs to run in parallel
@@ -31,14 +30,13 @@ class HILDetector():
         front_num : int, default 1
             Number of jobs to run in parallel at the front end
         """
-        print("starting detection...")
         sample_freq = validate_param(sample_freq, 'sample_freq', (int, float))
         filter_freq = validate_filter_freq(filter_freq)
         if filter_freq[1] > sample_freq / 2:
             raise ValueError('filter_freq[1] must be less than sample_freq/2')
         sd_thres = validate_param(sd_thres, 'sd_thres', (int, float))
         min_window = validate_param(min_window, 'min_window', (int, float))
-        epoch_len = validate_param(epoch_len, 'epoch_len', (int, float))
+        epoch_time = validate_param(epoch_time, 'epoch_time', (int, float))
         n_jobs = validate_param(n_jobs, 'n_jobs', int)
         use_kwargs = validate_param(use_kwargs, 'use_kwargs', bool)
         front_num = validate_param(front_num, 'front_num', int)
@@ -47,7 +45,7 @@ class HILDetector():
         self.filter_freq = filter_freq
         self.sd_thres = sd_thres
         self.min_window = min_window
-        self.epoch_len = epoch_len
+        self.epoch_time = epoch_time
         self.n_jobs = n_jobs
         self.use_kwargs = use_kwargs
         self.front_num = front_num
@@ -142,13 +140,13 @@ class HILDetector():
         hilbert_transformed = np.abs(hilbert(data))
         savemat('hilbert_signal_python.mat', {'hilbert_signal': hilbert_transformed})
         # Thresholding 
-        epoch_lims = self._compute_epoch_lims(len(data), self.sample_freq, self.epoch_len)
+        epoch_lims = self._compute_epoch_lims(len(data), self.sample_freq, self.epoch_time)
         epoch_lims = epoch_lims + 1  # 调整起始点，确保与 MATLAB 对齐
         epoch_lims = np.unique(epoch_lims, axis=0)  # 删除重复的行
         HFOs = self._get_HFOs(hilbert_transformed, epoch_lims, self.sample_freq, self.min_window, self.sd_thres)
         return HFOs, channel_names
 
-    def _compute_epoch_lims(self, data_len, sample_freq, epoch_len):
+    def _compute_epoch_lims(self, data_len, sample_freq, epoch_time):
         """
         Compute the limits of each epoch.
 
@@ -156,14 +154,14 @@ class HILDetector():
         ----------
         data_len : int | float
         sample_freq : float | int
-        epoch_len : int | float
+        epoch_time : int | float
 
         Returns
         -------
         epoch_lims : numpy array of int, shape (n_epochs, 2)
         """
-        epoch_len = round(epoch_len * sample_freq)
-        temp = np.arange(0, data_len, epoch_len)
+        epoch_time = round(epoch_time * sample_freq)
+        temp = np.arange(0, data_len, epoch_time)
 
         if temp[-1] < data_len:
             temp = np.append(temp, data_len)
