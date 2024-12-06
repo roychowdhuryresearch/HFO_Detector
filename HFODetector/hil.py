@@ -88,22 +88,20 @@ class HILDetector():
         data = validate_type(data, 'data', np.ndarray)
         channels = validate_type(channels, 'channels', np.ndarray)
 
-        # 只处理第一个通道
-        # first_channel_data = data[0]
-        # first_channel_name = channels[0]
-
-        n_channels = data.shape[0]  # 获取通道数
-        channel_HFOs = []
-        
-        for i in range(n_channels):
-            print(f"Processing channel {channels[i]}...")
-            HFOs, channel_name = self.detect(data[i], channels[i], filtered)
-            if HFOs is not None:
-                channel_HFOs.append(HFOs)
-            else:
-                channel_HFOs.append([])  # 如果没有找到HFO，则追加一个空列表
-    
-        return np.array(channels), np.array(channel_HFOs, dtype=object)
+        param_list = [{"data": data[i], "channel_names": channels[i], "filtered": filtered} for i in range(len(channels))]
+        ret = parallel_process(param_list, self.detect, self.n_jobs, self.use_kwargs, self.front_num)
+        channel_name, HFOs = [], []
+        for j in ret:
+            if not type(j) is tuple:
+                print(j)
+            if j[0] is None:
+                continue
+            HFOs.append(j[0])
+            channel_name.append(j[1])
+        channel_name = np.array(channel_name)
+        HFOs = np.array(HFOs, dtype=object)
+        index = reorder(channel_name, channels)
+        return channel_name[index], HFOs[index]
 
 
     def detect(self, data, channel_names, filtered=False):
@@ -139,11 +137,11 @@ class HILDetector():
         
         # Hilbert Transform Calculation
         hilbert_transformed = np.abs(hilbert(data))
-        savemat('hilbert_signal_python.mat', {'hilbert_signal': hilbert_transformed})
+
         # Thresholding 
         epoch_lims = self._compute_epoch_lims(len(data), self.sample_freq, self.epoch_len)
-        epoch_lims = epoch_lims + 1  # 调整起始点，确保与 MATLAB 对齐
-        epoch_lims = np.unique(epoch_lims, axis=0)  # 删除重复的行
+        epoch_lims = epoch_lims + 1
+        epoch_lims = np.unique(epoch_lims, axis=0)
         HFOs = self._get_HFOs(hilbert_transformed, epoch_lims, self.sample_freq, self.min_window, self.sd_thres)
         return HFOs, channel_names
 
@@ -263,7 +261,7 @@ class HILDetector():
             
             # If no valid intervals are found, skip to the next epoch
             if len(wind_ini) == 0:
-                print(f"No valid HFOs found in Epoch [{i}:{j}]")
+                # print(f"No valid HFOs found in Epoch [{i}:{j}]")
                 continue
             
             # Combine valid intervals into a list of HFOs
