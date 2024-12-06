@@ -31,7 +31,6 @@ class HILDetector():
         front_num : int, default 1
             Number of jobs to run in parallel at the front end
         """
-        print("starting detection...")
         sample_freq = validate_param(sample_freq, 'sample_freq', (int, float))
         filter_freq = validate_filter_freq(filter_freq)
         if filter_freq[1] > sample_freq / 2:
