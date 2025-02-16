@@ -5,8 +5,8 @@ from .utils import *
 class HILDetector():
     
     def __init__(self, sample_freq, filter_freq=[80, 500], 
-                sd_thres=5, min_window=6 * 1e-3, 
-                epoch_len=600, n_jobs=32, 
+                sd_thres=5, min_window=10 * 1e-3, 
+                epoch_len=3600, n_jobs=32, 
                 use_kwargs=True, front_num=1):
         """
         Initialize the HIL-based HFO detector.
@@ -19,9 +19,9 @@ class HILDetector():
             Filter freqs in Hz
         sd_thres : float | int, default 5
             Threshold in standard deviations for HFO detection
-        min_window : float | int, default 6 * 1e-3 s
+        min_window : float | int, default 10 * 1e-3 s
             Minimum window time for an HFO in seconds(s)
-        epoch_len : float | int, default 600 s
+        epoch_len : float | int, default 3600 s
             Cycle time in seconds(s)
         n_jobs : int, default 32
             Number of jobs to run in parallel
@@ -139,7 +139,6 @@ class HILDetector():
 
         # Thresholding 
         epoch_lims = self._compute_epoch_lims(len(data), self.sample_freq, self.epoch_len)
-        epoch_lims = epoch_lims + 1
         epoch_lims = np.unique(epoch_lims, axis=0)
         HFOs = self._get_HFOs(hilbert_transformed, epoch_lims, self.sample_freq, self.min_window, self.sd_thres)
         return HFOs, channel_names
@@ -162,42 +161,10 @@ class HILDetector():
         temp = np.arange(0, data_len, epoch_len)
 
         if temp[-1] < data_len:
-            temp = np.append(temp, data_len)
+            temp = np.append(temp, data_len - 1)
         epoch_lims = np.vstack([temp[:-1], temp[1:]]).T
         return epoch_lims
     
-    # def _get_HFOs(self, hilbert_transformed, epoch_lims, sample_freq, min_window, sd_thres):
-    #     """
-    #     Get HFOs from a single channel.
-    #     """
-    #     min_window = round(min_window * sample_freq)
-
-    #     HFOs = []
-    #     for i, j in epoch_lims:
-    #         epoch_data = hilbert_transformed[i:j]
-    #         mean_val = np.mean(epoch_data)
-    #         std_val = np.std(epoch_data)
-    #         thresholded = epoch_data > (mean_val + sd_thres * std_val)
-            
-    #         # Selection of Valid Intervals
-    #         wind_thres = np.pad(thresholded.astype(int), 1)
-    #         wind_jumps = np.diff(wind_thres)
-    #         wind_jump_up = np.where(wind_jumps == 1)[0]
-    #         wind_jump_down = np.where(wind_jumps == -1)[0] - 1
-    #         wind_dist = wind_jump_down - wind_jump_up
-
-    #         valid_intervals = wind_dist > min_window
-    #         wind_ini = wind_jump_up[valid_intervals]
-    #         wind_end = wind_jump_down[valid_intervals]
-
-    #         if len(wind_ini) == 0:
-    #             continue
-
-    #         wind_intervals = np.vstack((wind_ini, wind_end)).T
-    #         HFOs.extend(wind_intervals)
-
-    #     return np.array(HFOs)
-
     def _get_HFOs(self, hilbert_transformed, epoch_lims, sample_freq, min_window, sd_thres):
         """
         Get HFOs from a single channel.
@@ -256,7 +223,7 @@ class HILDetector():
             # Select valid intervals where the distance exceeds the minimum window length
             valid_intervals = wind_dist > min_window
             wind_ini = wind_jump_up[valid_intervals]
-            wind_end = wind_jump_down[valid_intervals]
+            wind_end = wind_jump_down[valid_intervals] - 1
             
             # If no valid intervals are found, skip to the next epoch
             if len(wind_ini) == 0:
